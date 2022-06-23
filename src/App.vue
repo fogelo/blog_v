@@ -6,9 +6,14 @@
     <button @click="addDisLike">dislike</button>
 
     <h1>Страница с постами</h1>
+    <div class="app__btns">
+      <my-button @click="showDialog" style="margin: 15px 0">Cоздать пост</my-button>
+      <my-select
+          v-model="selectedSort"
+          :options="sortOption"
+      />
+    </div>
 
-    <my-button @click="fetchPosts" style="margin: 15px 0">Получить посты</my-button>
-    <my-button @click="showDialog" style="margin: 15px 0">Cоздать пост</my-button>
     <my-dialog v-model:show="dialogVisible">
       <post-form
           @create="createPost"
@@ -16,7 +21,7 @@
     </my-dialog>
 
     <post-list
-        :posts="posts"
+        :posts="sortedPosts"
         @remove="removePost"
         v-if="!isPostLoading"
     />
@@ -41,7 +46,12 @@ export default {
       dislikes: 0,
       posts: [],
       dialogVisible: false,
-      isPostLoading: false
+      isPostLoading: false,
+      selectedSort: "",
+      sortOption: [
+        {value: "title", name: "по названию"},
+        {value: "body", name: "по содержимому"},
+      ]
     }
   },
   methods: {
@@ -75,6 +85,19 @@ export default {
   },
   mounted() {
     this.fetchPosts()
+  },
+  computed: {
+    sortedPosts() {
+      return [...this.posts].sort((post1, post2) => post1[this.selectedSort]?.localeCompare(post2[this.selectedSort]))
+    }
+  },
+
+  watch: {
+    // selectedSort(newValue) {
+    //   this.posts.sort((post1, post2) => {
+    //     return post1[newValue]?.localeCompare(post2[newValue])
+    //   })
+    // }
   }
 }
 </script>
@@ -88,5 +111,10 @@ export default {
 
 .app {
   padding: 10px;
+}
+
+.app__btns {
+  display: flex;
+  justify-content: space-between;
 }
 </style>
