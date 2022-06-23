@@ -6,6 +6,8 @@
     <button @click="addDisLike">dislike</button>
 
     <h1>Страница с постами</h1>
+
+    <my-button @click="fetchPosts" style="margin: 15px 0">Получить посты</my-button>
     <my-button @click="showDialog" style="margin: 15px 0">Cоздать пост</my-button>
     <my-dialog v-model:show="dialogVisible">
       <post-form
@@ -16,7 +18,9 @@
     <post-list
         :posts="posts"
         @remove="removePost"
+        v-if="!isPostLoading"
     />
+    <div v-else>Идет загрузка</div>
   </div>
 </template>
 
@@ -24,6 +28,7 @@
 import PostForm from "@/components/PostForm";
 import PostList from "@/components/PostList"
 import MyButton from "@/components/UI/MyButton";
+import axios from "axios"
 
 export default {
   components: {
@@ -35,7 +40,8 @@ export default {
       likes: 5,
       dislikes: 0,
       posts: [],
-      dialogVisible: false
+      dialogVisible: false,
+      isPostLoading: false
     }
   },
   methods: {
@@ -54,7 +60,21 @@ export default {
     },
     showDialog() {
       this.dialogVisible = true
-    }
+    },
+    async fetchPosts() {
+      try {
+        this.isPostLoading = true
+        const response = await axios.get("https://jsonplaceholder.typicode.com/posts?_limit=10")
+        this.posts = response.data
+      } catch (e) {
+        alert("ошибка")
+      } finally {
+        this.isPostLoading = false
+      }
+    },
+  },
+  mounted() {
+    this.fetchPosts()
   }
 }
 </script>
