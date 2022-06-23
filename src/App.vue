@@ -6,6 +6,7 @@
     <button @click="addDisLike">dislike</button>
 
     <h1>Страница с постами</h1>
+    <my-input v-model="searchQuery" placeholder="Поиск..."/>
     <div class="app__btns">
       <my-button @click="showDialog" style="margin: 15px 0">Cоздать пост</my-button>
       <my-select
@@ -21,7 +22,7 @@
     </my-dialog>
 
     <post-list
-        :posts="sortedPosts"
+        :posts="sortedAndSearchedPosts"
         @remove="removePost"
         v-if="!isPostLoading"
     />
@@ -47,6 +48,7 @@ export default {
       posts: [],
       dialogVisible: false,
       isPostLoading: false,
+      searchQuery: "",
       selectedSort: "",
       sortOption: [
         {value: "title", name: "по названию"},
@@ -89,6 +91,9 @@ export default {
   computed: {
     sortedPosts() {
       return [...this.posts].sort((post1, post2) => post1[this.selectedSort]?.localeCompare(post2[this.selectedSort]))
+    },
+    sortedAndSearchedPosts() {
+      return [...this.sortedPosts].filter(post => post.title.includes(this.searchQuery))
     }
   },
 
