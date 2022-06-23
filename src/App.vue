@@ -4,9 +4,15 @@
     <div>количество дизлайков: <strong>{{ dislikes }}</strong></div>
     <button @click="addLike">like</button>
     <button @click="addDisLike">dislike</button>
-    <post-form
-        @create="createPost"
-    />
+
+    <h1>Страница с постами</h1>
+    <my-button @click="showDialog" style="margin: 15px 0">Cоздать пост</my-button>
+    <my-dialog v-model:show="dialogVisible">
+      <post-form
+          @create="createPost"
+      />
+    </my-dialog>
+
     <post-list
         :posts="posts"
         @remove="removePost"
@@ -17,9 +23,11 @@
 <script>
 import PostForm from "@/components/PostForm";
 import PostList from "@/components/PostList"
+import MyButton from "@/components/UI/MyButton";
 
 export default {
   components: {
+    MyButton,
     PostList, PostForm
   },
   data() {
@@ -27,6 +35,7 @@ export default {
       likes: 5,
       dislikes: 0,
       posts: [],
+      dialogVisible: false
     }
   },
   methods: {
@@ -38,9 +47,13 @@ export default {
     },
     createPost(post) {
       this.posts.push(post)
+      this.dialogVisible = false
     },
     removePost(post) {
       this.posts = this.posts.filter(p => p.id !== post.id)
+    },
+    showDialog() {
+      this.dialogVisible = true
     }
   }
 }
