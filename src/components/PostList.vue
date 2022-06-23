@@ -1,5 +1,5 @@
 <template>
-  <post-item v-for="post in posts" v-bind:key="post.id" :post="post"/>
+  <post-item v-for="post in posts" v-bind:key="post.id" :post="post" @remove="$emit('remove', post)"/>
 </template>
 
 <script>

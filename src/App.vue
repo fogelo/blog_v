@@ -5,9 +5,12 @@
     <button @click="addLike">like</button>
     <button @click="addDisLike">dislike</button>
     <post-form
-      @create="createPost"
+        @create="createPost"
     />
-    <post-list :posts="posts"/>
+    <post-list
+        :posts="posts"
+        @remove="removePost"
+    />
   </div>
 </template>
 
@@ -23,9 +26,7 @@ export default {
     return {
       likes: 5,
       dislikes: 0,
-      posts: [
-
-      ],
+      posts: [],
     }
   },
   methods: {
@@ -37,6 +38,9 @@ export default {
     },
     createPost(post) {
       this.posts.push(post)
+    },
+    removePost(post) {
+      this.posts = this.posts.filter(p => p.id !== post.id)
     }
   }
 }
